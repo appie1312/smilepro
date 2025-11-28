@@ -18,6 +18,13 @@
                 </div>
             </div>
 
+            @if(auth()->check() && auth()->user()->role == ['patient', 'praktijkmanagement'])
+    <a class="nav-link {{ request()->routeIs('patient_index') ? 'active' : '' }}" 
+       href="{{ route('patient_index') }}">
+        {{ __('Patiënt') }}
+    </a>
+@endif
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">

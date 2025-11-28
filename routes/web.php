@@ -25,7 +25,9 @@ Route::get('/tandarts', [App\Http\Controllers\TandartsController::class, 'index'
 
 Route::get('/patient', [App\Http\Controllers\PatientController::class, 'index'])
     ->name('patient.index')
-    ->middleware(['auth', 'role:patient']);
+    ->middleware(['auth', 'role:patient,praktijkmanagement']);
+
+    
 
 Route::get('/dashboard', function () {
     return view('dashboard');
