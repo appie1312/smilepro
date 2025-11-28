@@ -36,7 +36,7 @@ class AuthenticatedSessionController extends Controller
             'tandarts' => route('tandarts.index'),
             'mondhygienist' => route('mondhygienist.index'),
             'assistent' => route('assistent.index'),
-            default => route('welcome'),
+            default => route('dashboard'),
         });
     }
     /**
