@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const table = document.getElementById('appointmentsTable');
+    if (!table || !Array.isArray(appointments)) return;
 
     appointments.forEach(app => {
         let row = document.createElement("tr");

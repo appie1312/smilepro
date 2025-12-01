@@ -35,10 +35,13 @@
         </div>
     </div>
 
-    {{-- JSON Data doorgeven aan JavaScript --}}
-    <script>
-        const appointments = @json($appointments);
-    </script>
-    <script src="/js/appointments-table.js"></script>
+<script>
+    const appointments = @json($appointments);
+</script>
+<script src="{{ asset('js/appointments-table.js') }}"></script>
+
+
+
+
 
 </x-app-layout>
