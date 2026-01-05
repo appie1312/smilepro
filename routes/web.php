@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OmzetController;
+
 
 Route::middleware(['auth'])->group(function () {
 
@@ -42,6 +45,20 @@ Route::get('/management-dashboard', function () {
     })->name('management.dashboard');
 
 
+// Na login overzicht (landing)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/overzicht', [DashboardController::class, 'overzicht'])->name('overzicht');
+
+    // Dashboard beheren (alleen praktijkmanagement)
+    Route::get('/dashboard-beheren', [DashboardController::class, 'beheren'])
+        ->middleware('praktijkmanagement')
+        ->name('dashboard.beheren');
+
+    // Omzet bekijken (alleen praktijkmanagement)
+    Route::get('/omzet', [OmzetController::class, 'index'])
+        ->middleware('praktijkmanagement')
+        ->name('omzet.index');
+});
 
 
 Route::get('/', function () {
