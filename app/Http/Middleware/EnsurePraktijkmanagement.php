@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Middleware/EnsurePraktijkmanagement.php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -14,7 +12,14 @@ class EnsurePraktijkmanagement
     {
         $user = $request->user();
 
-        if (!$user || $user->role !== 'praktijkmanagement') {
+        if (!$user) {
+            abort(403, 'Je hebt geen toestemming om de omzet te bekijken.');
+        }
+
+        // Alleen rolename gebruiken (jouw wens)
+        $rolename = strtolower(trim((string) ($user->rolename ?? '')));
+
+        if ($rolename !== 'praktijkmanagement') {
             abort(403, 'Je hebt geen toestemming om de omzet te bekijken.');
         }
 
