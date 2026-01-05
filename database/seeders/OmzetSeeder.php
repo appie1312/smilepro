@@ -28,6 +28,31 @@ class OmzetSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+        
+            [
+                'omschrijving' => 'Omzet per kwartaal',
+                'klant_naam' => 'Patient C',
+                'datum' => '2025-11-20',
+                'bedrag' => 2750.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'omschrijving' => 'Omzet per maand',
+                'klant_naam' => 'Patient D',
+                'datum' => '2025-10-10',
+                'bedrag' => 1500.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'omschrijving' => 'Omzet per dienst',
+                'klant_naam' => 'Patient E',
+                'datum' => '2025-09-05',
+                'bedrag' => 2000.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }
