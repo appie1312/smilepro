@@ -15,14 +15,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            OmzetSeeder::class,
-        ]);
-        // User::factory(10)->create();
-
-        User::factory()->create([
+        $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'rolename' => 'patient',
+        ]);
+
+        // Create person and patient for test user
+        $person = \App\Models\Person::factory()->create(['user_id' => $testUser->id]);
+        \App\Models\Patient::factory()->create(['person_id' => $person->id]);
+
+        // Create praktijkmanagement user
+        $pmUser = User::factory()->create([
+            'name' => 'Praktijk Manager',
+            'email' => 'pm@example.com',
+            'rolename' => 'praktijkmanagement',
+        ]);
+
+        // Create person for pm user
+        \App\Models\Person::factory()->create(['user_id' => $pmUser->id]);
+
+        // Create some fake data
+        \App\Models\Person::factory(4)->create(); // 4 more persons without user
+        \App\Models\Patient::factory(2)->create(); // 2 more patients
+        \App\Models\Employee::factory(2)->create();
+        // \App\Models\Appointment::factory(4)->create();
+
+        // Existing
+        $this->call([
+            OmzetSeeder::class,
+            InvoiceSeeder::class,
         ]);
     }
 }

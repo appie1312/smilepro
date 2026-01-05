@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Appointment;
+use App\Models\Invoice;
+use App\Models\Person;
 
 class User extends Authenticatable
 {
@@ -56,6 +58,16 @@ class User extends Authenticatable
     public function appointmentsAsDentist()
     {
         return $this->hasMany(Appointment::class, 'dentist_id');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'patient_id');
+    }
+
+    public function person()
+    {
+        return $this->hasOne(Person::class);
     }
 }
 

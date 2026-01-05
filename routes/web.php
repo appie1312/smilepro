@@ -85,6 +85,17 @@ Route::get('/patient', [App\Http\Controllers\PatientController::class, 'index'])
     ->name('patient.index')
     ->middleware(['auth', 'role:patient,praktijkmanagement']);
 
+Route::get('/facturen', [App\Http\Controllers\InvoiceController::class, 'index'])
+    ->name('invoices.index')
+    ->middleware(['auth', 'role:patient']);
+
+Route::get('/invoices/create', [App\Http\Controllers\InvoiceController::class, 'create'])
+    ->name('invoices.create')
+    ->middleware(['auth', 'role:praktijkmanagement']);
+
+Route::post('/invoices', [App\Http\Controllers\InvoiceController::class, 'store'])
+    ->name('invoices.store')
+    ->middleware(['auth', 'role:praktijkmanagement']);
     
 
 Route::get('/dashboard', function () {
