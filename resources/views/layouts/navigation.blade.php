@@ -39,20 +39,18 @@
                         </x-nav-link>
                     @endif
 
+                    @if($isPraktijkmanagement)
                     <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.index')">
                         {{ __('Medewerkers') }}
                     </x-nav-link>
-
-                    <x-nav-link :href="route('employees.availability.create')" :active="request()->routeIs('employees.availability.create')">
-                        {{ __('Mijn Beschikbaarheid') }}
-                    </x-nav-link>
-
-                    @if($isPraktijkmanagement || $isAdmin)
-                        <x-nav-link :href="route('employees.create')" :active="request()->routeIs('employees.create')">
-                            {{ __('+ Nw Medewerker') }}
-                        </x-nav-link>
                     @endif
 
+                     @if($isPraktijkmanagement)
+                     <x-nav-link :href="route('employees.availability.create')" :active="request()->routeIs('employees.availability.create')">
+                        {{ __('Mijn Beschikbaarheid') }}
+                    </x-nav-link>
+                    @endif
+                    
                     @php
                         $rolename = auth()->check() ? strtolower(trim((string) auth()->user()->rolename)) : null;
                     @endphp
@@ -140,19 +138,18 @@
                 </x-responsive-nav-link>
             @endif
 
+            @if($isPraktijkmanagement)
             <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.index')">
                 {{ __('Medewerkers') }}
             </x-responsive-nav-link>
+            @endif
 
-            <x-responsive-nav-link :href="route('employees.availability.create')" :active="request()->routeIs('employees.availability.create')">
+             @if($isPraktijkmanagement)
+             <x-responsive-nav-link :href="route('employees.availability.create')" :active="request()->routeIs('employees.availability.create')">
                 {{ __('Mijn Beschikbaarheid') }}
             </x-responsive-nav-link>
-
-            @if($isPraktijkmanagement || $isAdmin)
-                <x-responsive-nav-link :href="route('employees.create')" :active="request()->routeIs('employees.create')">
-                    {{ __('+ Nw Medewerker') }}
-                </x-responsive-nav-link>
             @endif
+
             {{-- Omzet: alleen praktijkmanagement --}}
           @if($isPraktijkmanagement)
                 <x-responsive-nav-link :href="route('omzet.index')" :active="request()->routeIs('omzet.index')">

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Mijn Beschikbaarheid Beheren') }}
+            {{ __('Beschikbaarheid Toevoegen') }}
         </h2>
     </x-slot>
 
@@ -13,6 +13,19 @@
 
                 <form method="POST" action="{{ route('employees.availability.store') }}">
                     @csrf
+
+                    <div class="mb-4">
+                        <label for="user_id" class="block font-medium text-sm text-gray-700">Selecteer Medewerker *</label>
+                        <select id="user_id" name="user_id" required
+                            class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full mt-1">
+                            @foreach($employees as $employee)
+                                <option value="{{ $employee->id }}" 
+                                    {{ (auth()->id() == $employee->id) ? 'selected' : '' }}>
+                                    {{ $employee->name }} ({{ $employee->rolename }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
