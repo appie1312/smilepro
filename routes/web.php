@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OmzetController;
+use App\Http\Controllers\EmployeeController;
 
 
 Route::middleware(['auth'])->group(function () {
@@ -33,6 +34,29 @@ Route::middleware(['auth'])->group(function () {
         
     Route::get('/invoices/manage', [App\Http\Controllers\InvoiceController::class, 'manage'])
         ->name('invoices.manage')
+        ->middleware('role:praktijkmanagement');
+
+    // 1. Overzicht en Beschikbaarheid inzien (Iedereen)
+    Route::get('/medewerkers', [EmployeeController::class, 'index'])
+        ->name('employees.index');
+
+    Route::get('/medewerkers/{employee}/beschikbaarheid', [EmployeeController::class, 'showAvailability'])
+        ->name('employees.availability');
+
+    // 2. Eigen beschikbaarheid beheren (Iedereen)
+    Route::get('/mijn-beschikbaarheid/toevoegen', [EmployeeController::class, 'createAvailability'])
+        ->name('employees.availability.create');
+        
+    Route::post('/mijn-beschikbaarheid', [EmployeeController::class, 'storeAvailability'])
+        ->name('employees.availability.store');
+
+    // 3. Nieuwe medewerker toevoegen (Alleen Praktijkmanagement)
+    Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])
+        ->name('employees.create')
+        ->middleware('role:praktijkmanagement'); // Zorgt dat alleen management dit kan
+        
+    Route::post('/medewerkers', [EmployeeController::class, 'store'])
+        ->name('employees.store')
         ->middleware('role:praktijkmanagement');
 
     // Invoices for admin
