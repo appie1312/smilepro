@@ -49,6 +49,9 @@
                         <x-nav-link :href="route('omzet.index')" :active="request()->routeIs('omzet.index')">
                             Omzet bekijken
                         </x-nav-link>
+                        <x-nav-link :href="route('invoices.manage')" :active="request()->routeIs('invoices.manage')">
+                            Facturen beheren
+                        </x-nav-link>
                     @endif
 
                 </div>

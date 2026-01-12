@@ -97,6 +97,10 @@ Route::post('/invoices', [App\Http\Controllers\InvoiceController::class, 'store'
     ->name('invoices.store')
     ->middleware(['auth', 'role:praktijkmanagement']);
     
+Route::get('/invoices/manage', [App\Http\Controllers\InvoiceController::class, 'manage'])
+    ->name('invoices.manage')
+    ->middleware(['auth', 'role:praktijkmanagement']);
+    
 
 Route::get('/dashboard', function () {
     return view('dashboard');

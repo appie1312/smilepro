@@ -52,4 +52,14 @@ class InvoiceController extends Controller
 
         return redirect()->route('praktijkmanagement.index')->with('success', 'Factuur succesvol aangemaakt.');
     }
+
+    public function manage()
+    {
+        $invoices = Invoice::with('patient.person')->orderBy('created_at', 'desc')->get();
+
+        return view('invoices.manage', [
+            'invoices' => $invoices,
+            'title' => 'Alle Facturen'
+        ]);
+    }
 }
