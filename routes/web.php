@@ -3,10 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\OmzetController;
 use App\Http\Controllers\EmployeeController;
-
 
 Route::middleware(['auth'])->group(function () {
 
@@ -16,51 +13,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mijn-afspraken', [AppointmentController::class, 'myAppointments'])
         ->name('appointments.my');
 
-    // Management: afspraken beheren (alleen praktijkmanagement/admin)
-    Route::get('/management/appointments', [AppointmentController::class, 'manage'])
-        ->name('appointments.manage');
+    // Overzicht
+    Route::get('/medewerkers', [EmployeeController::class, 'index'])->name('employees.index');
+    
+    // SCENARIO 1: Nieuwe medewerker
+    Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/medewerkers', [EmployeeController::class, 'store'])->name('employees.store');
 
-    Route::delete('/management/appointments/{appointment}', [AppointmentController::class, 'destroy'])
-        ->name('appointments.destroy');
-
-    // Custom invoice routes
-    Route::get('/invoices/create', [App\Http\Controllers\InvoiceController::class, 'create'])
-        ->name('invoices.create')
-        ->middleware('role:praktijkmanagement');
-
-    Route::post('/invoices', [App\Http\Controllers\InvoiceController::class, 'store'])
-        ->name('invoices.store')
-        ->middleware('role:praktijkmanagement');
-        
-    Route::get('/invoices/manage', [App\Http\Controllers\InvoiceController::class, 'manage'])
-        ->name('invoices.manage')
-        ->middleware('role:praktijkmanagement');
-
-    // 1. Overzicht en Beschikbaarheid inzien (Iedereen)
-    Route::get('/medewerkers', [EmployeeController::class, 'index'])
-        ->name('employees.index');
-
+    // Beschikbaarheid inzien (bestaand)
     Route::get('/medewerkers/{employee}/beschikbaarheid', [EmployeeController::class, 'showAvailability'])
         ->name('employees.availability');
 
-    // 2. Eigen beschikbaarheid beheren (Iedereen)
+    // SCENARIO 2: Eigen beschikbaarheid toevoegen
     Route::get('/mijn-beschikbaarheid/toevoegen', [EmployeeController::class, 'createAvailability'])
         ->name('employees.availability.create');
-        
     Route::post('/mijn-beschikbaarheid', [EmployeeController::class, 'storeAvailability'])
         ->name('employees.availability.store');
-
-    // 3. Nieuwe medewerker toevoegen (Alleen Praktijkmanagement)
-    Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])
-        ->name('employees.create')
-        ->middleware('role:praktijkmanagement'); // Zorgt dat alleen management dit kan
-        
-    Route::post('/medewerkers', [EmployeeController::class, 'store'])
-        ->name('employees.store')
-        ->middleware('role:praktijkmanagement');
-
-    // Invoices for admin
-    Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->middleware('auth');
 });
 
 Route::get('/mijn-afspraken', [AppointmentController::class, 'myAppointments'])
