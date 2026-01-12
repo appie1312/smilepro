@@ -22,7 +22,7 @@
                                 <option value="">Selecteer een patiënt</option>
                                 @foreach($patients as $patient)
                                     <option value="{{ $patient->id }}">
-                                        {{ $patient->name }}
+                                        {{ $patient->person->voornaam }} {{ $patient->person->achternaam }} ({{ $patient->nummer }})
                                     </option>
                                 @endforeach
                             </select>

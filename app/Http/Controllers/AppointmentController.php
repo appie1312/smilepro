@@ -40,8 +40,8 @@ class AppointmentController extends Controller
             abort(403, 'Alleen praktijkmanagement kan afspraken beheren.');
         }
 
-        $appointments = Appointment::with('patient', 'dentist')
-            ->orderBy('date')
+        $appointments = Appointment::orderBy('datum')
+            ->orderBy('tijd')
             ->paginate(10);
 
         return view('appointments.manage', compact('appointments'));
@@ -80,9 +80,15 @@ class AppointmentController extends Controller
             abort(403, 'Alleen behandelaars kunnen hun eigen afspraken zien.');
         }
 
-        $appointments = Appointment::with('patient', 'dentist')
-            ->where('dentist_id', $user->id)
-            ->orderBy('date')
+        // Find the employee record for this user
+        $employee = $user->person?->employee;
+        if (!$employee) {
+            abort(403, 'Geen medewerker record gevonden.');
+        }
+
+        $appointments = Appointment::where('employee_id', $employee->id)
+            ->orderBy('datum')
+            ->orderBy('tijd')
             ->get();
 
         return view('appointments.my', compact('appointments'));

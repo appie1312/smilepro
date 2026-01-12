@@ -3,85 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use App\Models\User;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $user = auth()->user();
+        $patient = $user->person->patient ?? null;
+
+        if (!$patient) {
+            return view('invoices.index', [
+                'invoices' => collect(),
+                'title' => 'Mijn Facturen'
+            ]);
+        }
+
+        $invoices = $patient->invoices()->orderBy('created_at', 'desc')->get();
+
+        return view('invoices.index', [
+            'invoices' => $invoices,
+            'title' => 'Mijn Facturen'
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        if (auth()->user()->rolename !== 'admin') {
-            abort(403, 'Alleen praktijkmanagement kan facturen aanmaken.');
-        }
+        $patients = Patient::with('person')->get();
 
-        // Get patients (users with role patient?)
-        $patients = User::where('rolename', 'patient')->get();
-
-        return view('invoices.create', compact('patients'));
+        return view('invoices.create', [
+            'patients' => $patients,
+            'title' => 'Nieuwe Factuur Aanmaken'
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        if (auth()->user()->rolename !== 'admin') {
-            abort(403, 'Alleen praktijkmanagement kan facturen aanmaken.');
-        }
-
         $request->validate([
-            'patient_id' => 'required|exists:users,id',
+            'patient_id' => 'required|exists:patients,id',
             'amount' => 'required|numeric|min:0',
-            'status' => 'required|string',
-            'due_date' => 'required|date',
-            'description' => 'nullable|string',
+            'status' => 'required|in:unpaid,paid,overdue',
+            'due_date' => 'required|date|after:today',
+            'description' => 'nullable|string|max:255',
         ]);
 
-        Invoice::create($request->all());
+        Invoice::create($request->only(['patient_id', 'amount', 'status', 'due_date', 'description']));
 
-        return redirect()->back()->with('success', 'Factuur aangemaakt.');
+        return redirect()->route('praktijkmanagement.index')->with('success', 'Factuur succesvol aangemaakt.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function manage()
     {
-        //
-    }
+        $invoices = Invoice::with('patient.person')->orderBy('created_at', 'desc')->get();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('invoices.manage', [
+            'invoices' => $invoices,
+            'title' => 'Alle Facturen'
+        ]);
     }
 }

@@ -2,25 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Appointment extends Model
+class Contact extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'patient_id',
-        'dentist_id',
-        'date',
-        'status',
+        'straatnaam',
+        'huisnummer',
+        'toevoeging',
+        'postcode',
+        'plaats',
+        'mobiel',
+        'email',
         'is_actief',
         'opmerking',
     ];
 
     protected $casts = [
-        'date' => 'datetime',
         'is_actief' => 'boolean',
     ];
 
@@ -28,11 +28,4 @@ class Appointment extends Model
     {
         return $this->belongsTo(Patient::class);
     }
-
-    public function employee(): BelongsTo
-    {
-        return $this->belongsTo(Employee::class, 'dentist_id');
-    }
 }
-
-

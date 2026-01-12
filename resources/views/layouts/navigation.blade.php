@@ -23,6 +23,12 @@
                         Afspraken
                     </x-nav-link>
 
+                    @if(auth()->check() && strtolower(auth()->user()->rolename) === 'patient')
+                        <x-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.index')">
+                            Facturen
+                        </x-nav-link>
+                    @endif
+
                     @if(auth()->check() && auth()->user()->rolename === 'admin')
                         <x-nav-link :href="route('appointments.manage')" :active="request()->routeIs('appointments.manage')">
                             Management
@@ -42,6 +48,9 @@
                    @if($isPraktijkmanagement)
                         <x-nav-link :href="route('omzet.index')" :active="request()->routeIs('omzet.index')">
                             Omzet bekijken
+                        </x-nav-link>
+                        <x-nav-link :href="route('invoices.manage')" :active="request()->routeIs('invoices.manage')">
+                            Facturen beheren
                         </x-nav-link>
                     @endif
 
@@ -104,6 +113,12 @@
             <x-responsive-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.index')">
                 Afspraken
             </x-responsive-nav-link>
+
+            @if(auth()->check() && strtolower(auth()->user()->rolename) === 'patient')
+                <x-responsive-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.index')">
+                    Facturen
+                </x-responsive-nav-link>
+            @endif
 
             @if(auth()->check() && auth()->user()->rolename === 'admin')
                 <x-responsive-nav-link :href="route('appointments.manage')" :active="request()->routeIs('appointments.manage')">
