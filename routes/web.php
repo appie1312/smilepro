@@ -22,6 +22,19 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/management/appointments/{appointment}', [AppointmentController::class, 'destroy'])
         ->name('appointments.destroy');
 
+    // Custom invoice routes
+    Route::get('/invoices/create', [App\Http\Controllers\InvoiceController::class, 'create'])
+        ->name('invoices.create')
+        ->middleware('role:praktijkmanagement');
+
+    Route::post('/invoices', [App\Http\Controllers\InvoiceController::class, 'store'])
+        ->name('invoices.store')
+        ->middleware('role:praktijkmanagement');
+        
+    Route::get('/invoices/manage', [App\Http\Controllers\InvoiceController::class, 'manage'])
+        ->name('invoices.manage')
+        ->middleware('role:praktijkmanagement');
+
     // Invoices for admin
     Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->middleware('auth');
 });
@@ -91,18 +104,6 @@ Route::get('/patient', [App\Http\Controllers\PatientController::class, 'index'])
 Route::get('/facturen', [App\Http\Controllers\InvoiceController::class, 'index'])
     ->name('invoices.index')
     ->middleware(['auth', 'role:patient']);
-
-Route::get('/invoices/create', [App\Http\Controllers\InvoiceController::class, 'create'])
-    ->name('invoices.create')
-    ->middleware(['auth', 'role:praktijkmanagement']);
-
-Route::post('/invoices', [App\Http\Controllers\InvoiceController::class, 'store'])
-    ->name('invoices.store')
-    ->middleware(['auth', 'role:praktijkmanagement']);
-    
-Route::get('/invoices/manage', [App\Http\Controllers\InvoiceController::class, 'manage'])
-    ->name('invoices.manage')
-    ->middleware(['auth', 'role:praktijkmanagement']);
     
 
 Route::get('/dashboard', function () {

@@ -17,8 +17,8 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'patient_id' => \App\Models\Patient::factory(),
-            'dentist_id' => \App\Models\Employee::factory(),
+            'patient_id' => \App\Models\User::factory()->create(['rolename' => 'patient'])->id,
+            'dentist_id' => \App\Models\User::factory()->create(['rolename' => 'Tandarts'])->id,
             'date' => $this->faker->dateTimeBetween('now', '+1 month')->format('Y-m-d H:i:s'),
             'status' => $this->faker->randomElement(['Bevestigd', 'Geannuleerd']),
             'opmerking' => $this->faker->optional()->sentence,

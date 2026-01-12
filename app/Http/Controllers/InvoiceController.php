@@ -30,7 +30,7 @@ class InvoiceController extends Controller
 
     public function create()
     {
-        $patients = Patient::with('person')->get();
+        $patients = Patient::with('person')->whereHas('person')->where('is_actief', true)->get();
 
         return view('invoices.create', [
             'patients' => $patients,
