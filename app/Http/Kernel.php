@@ -19,4 +19,9 @@ class Kernel extends HttpKernel
         // Nieuwe alias voor jouw eigen middleware:
         'management' => \App\Http\Middleware\EnsureUserIsManagement::class,
     ];
+
+    protected $routeMiddleware = [
+        // ...
+        'praktijkmanagement' => \App\Http\Middleware\EnsurePraktijkmanagement::class,
+    ];
 }

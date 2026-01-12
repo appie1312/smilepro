@@ -9,31 +9,42 @@
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
-
-
-        <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.index')">
-                Afspraken
-            </x-nav-link>
-
-            @if(auth()->check() && auth()->user()->rolename === 'admin')
-                <x-nav-link :href="route('appointments.manage')" :active="request()->routeIs('appointments.manage')">
-                    Management
-                </x-nav-link>
-            @endif
-
-            @if(auth()->check() && in_array(auth()->user()->rolename, ['Tandarts', 'Mondhygienis']))
-            <x-nav-link :href="route('appointments.my')" :active="request()->routeIs('appointments.my')">
-                Mijn afspraken
-            </x-nav-link>
-        @endif
-
-
-
-                <!-- Navigation Links -->
+                    @php
+                        $isPraktijkmanagement = auth()->check() &&
+                            strtolower(trim((string) auth()->user()->rolename)) === 'praktijkmanagement';
+                    @endphp
+                <!-- Navigation Links (DESKTOP) -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.index')">
+                        Afspraken
+                    </x-nav-link>
+
+                    @if(auth()->check() && auth()->user()->rolename === 'admin')
+                        <x-nav-link :href="route('appointments.manage')" :active="request()->routeIs('appointments.manage')">
+                            Management
+                        </x-nav-link>
+                    @endif
+
+                    @if(auth()->check() && in_array(auth()->user()->rolename, ['Tandarts', 'Mondhygienis']))
+                        <x-nav-link :href="route('appointments.my')" :active="request()->routeIs('appointments.my')">
+                            Mijn afspraken
+                        </x-nav-link>
+                    @endif
+
+                   @php
+                        $rolename = auth()->check() ? strtolower(trim((string) auth()->user()->rolename)) : null;
+                    @endphp
+
+                   @if($isPraktijkmanagement)
+                        <x-nav-link :href="route('omzet.index')" :active="request()->routeIs('omzet.index')">
+                            Omzet bekijken
+                        </x-nav-link>
+                    @endif
+
                 </div>
             </div>
 
@@ -83,12 +94,35 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
+    <!-- Responsive Navigation Menu (MOBILE) -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.index')">
+                Afspraken
+            </x-responsive-nav-link>
+
+            @if(auth()->check() && auth()->user()->rolename === 'admin')
+                <x-responsive-nav-link :href="route('appointments.manage')" :active="request()->routeIs('appointments.manage')">
+                    Management
+                </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->check() && in_array(auth()->user()->rolename, ['Tandarts', 'Mondhygienis']))
+                <x-responsive-nav-link :href="route('appointments.my')" :active="request()->routeIs('appointments.my')">
+                    Mijn afspraken
+                </x-responsive-nav-link>
+            @endif
+
+            {{-- Omzet: alleen praktijkmanagement --}}
+          @if($isPraktijkmanagement)
+                <x-responsive-nav-link :href="route('omzet.index')" :active="request()->routeIs('omzet.index')">
+                    Omzet bekijken
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
