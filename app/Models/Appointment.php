@@ -14,7 +14,6 @@ class Appointment extends Model
         'dentist_id',
         'date',               // 👈 deze erbij
         'customer_name',
-        'appointment_date',
         'appointment_time',
         'with_whom',
         'phone',
@@ -24,7 +23,6 @@ class Appointment extends Model
 
 
     protected $casts = [
-        'appointment_date' => 'date',
         'appointment_time' => 'datetime:H:i',
     ];
 

@@ -12,14 +12,14 @@ class AppointmentController extends Controller
     public function index()
     {
         $totalAppointments    = Appointment::count();
-        $todayAppointments    = Appointment::whereDate('appointment_date', today())->count();
-        $upcomingAppointments = Appointment::whereDate('appointment_date', '>=', today())->count();
+        $todayAppointments    = Appointment::whereDate('date', today())->count();
+        $upcomingAppointments = Appointment::whereDate('date', '>=', today())->count();
 
         $last7Days = Appointment::select(
-            DB::raw('DATE(appointment_date) as day'),
+            DB::raw('DATE(date) as day'),
             DB::raw('COUNT(*) as total')
         )
-            ->whereDate('appointment_date', '>=', now()->subDays(6)->toDateString())
+            ->whereDate('date', '>=', now()->subDays(6)->toDateString())
             ->groupBy('day')
             ->orderBy('day')
             ->get();
@@ -40,8 +40,8 @@ class AppointmentController extends Controller
             abort(403, 'Alleen praktijkmanagement kan afspraken beheren.');
         }
 
-        $appointments = Appointment::orderBy('appointment_date')
-            ->orderBy('appointment_time')
+        $appointments = Appointment::with('patient', 'dentist')
+            ->orderBy('date')
             ->paginate(10);
 
         return view('appointments.manage', compact('appointments'));
@@ -80,9 +80,9 @@ class AppointmentController extends Controller
             abort(403, 'Alleen behandelaars kunnen hun eigen afspraken zien.');
         }
 
-        $appointments = Appointment::where('dentist_id', $user->id)
-            ->orderBy('appointment_date')
-            ->orderBy('appointment_time')
+        $appointments = Appointment::with('patient', 'dentist')
+            ->where('dentist_id', $user->id)
+            ->orderBy('date')
             ->get();
 
         return view('appointments.my', compact('appointments'));

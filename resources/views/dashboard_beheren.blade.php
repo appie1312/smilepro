@@ -7,5 +7,9 @@
     <a href="{{ route('omzet.index') }}">
         <button>Omzet bekijken</button>
     </a>
+
+    <a href="{{ route('invoices.create') }}">
+        <button>Nieuwe Factuur Aanmaken</button>
+    </a>
 </body>
 </html>

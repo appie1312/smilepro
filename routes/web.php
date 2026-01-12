@@ -21,6 +21,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/management/appointments/{appointment}', [AppointmentController::class, 'destroy'])
         ->name('appointments.destroy');
+
+    // Invoices for admin
+    Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->middleware('auth');
 });
 
 Route::get('/mijn-afspraken', [AppointmentController::class, 'myAppointments'])
@@ -41,7 +44,7 @@ Route::get('/management-dashboard', function () {
             abort(403, 'Geen toegang — Alleen praktijkmanagement mag dit zien.');
         }
 
-        return 'Welkom Praktijkmanager!';
+        return view('dashboard_beheren');
     })->name('management.dashboard');
 
 
