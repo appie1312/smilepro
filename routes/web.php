@@ -6,7 +6,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OmzetController;
-
+use App\Http\Controllers\InvoiceController;
 
 Route::middleware(['auth'])->group(function () {
 
