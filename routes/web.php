@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\EmployeeController;
 
 Route::middleware(['auth'])->group(function () {
 
@@ -12,12 +13,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mijn-afspraken', [AppointmentController::class, 'myAppointments'])
         ->name('appointments.my');
 
-    // Management: afspraken beheren (alleen praktijkmanagement/admin)
-    Route::get('/management/appointments', [AppointmentController::class, 'manage'])
-        ->name('appointments.manage');
+    // Overzicht
+    Route::get('/medewerkers', [EmployeeController::class, 'index'])->name('employees.index');
+    
+    // SCENARIO 1: Nieuwe medewerker
+    Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/medewerkers', [EmployeeController::class, 'store'])->name('employees.store');
 
-    Route::delete('/management/appointments/{appointment}', [AppointmentController::class, 'destroy'])
-        ->name('appointments.destroy');
+    // Beschikbaarheid inzien (bestaand)
+    Route::get('/medewerkers/{employee}/beschikbaarheid', [EmployeeController::class, 'showAvailability'])
+        ->name('employees.availability');
+
+    // SCENARIO 2: Eigen beschikbaarheid toevoegen
+    Route::get('/mijn-beschikbaarheid/toevoegen', [EmployeeController::class, 'createAvailability'])
+        ->name('employees.availability.create');
+    Route::post('/mijn-beschikbaarheid', [EmployeeController::class, 'storeAvailability'])
+        ->name('employees.availability.store');
 });
 
 Route::get('/mijn-afspraken', [AppointmentController::class, 'myAppointments'])
