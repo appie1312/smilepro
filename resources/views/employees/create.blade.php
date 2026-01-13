@@ -30,25 +30,19 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="role" class="block font-medium text-sm text-gray-700">Medewerkertype *</label>
-                        <select id="role" name="role" required
+                    <div class="mb-6">
+                        <label for="rolename" class="block font-medium text-sm text-gray-700">Medewerkertype *</label>
+                        <select id="rolename" name="rolename" required
                             class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full mt-1">
                             <option value="">Kies een rol...</option>
-                            <option value="Tandarts" {{ old('role') == 'Tandarts' ? 'selected' : '' }}>Tandarts</option>
-                            <option value="Mondhygiënist" {{ old('role') == 'Mondhygiënist' ? 'selected' : '' }}>Mondhygiënist</option>
-                            <option value="Assistent" {{ old('role') == 'Assistent' ? 'selected' : '' }}>Assistent</option>
-                            <option value="Praktijkmanagement" {{ old('role') == 'Praktijkmanagement' ? 'selected' : '' }}>Praktijkmanagement</option>
+                            <option value="Tandarts" {{ old('rolename') == 'Tandarts' ? 'selected' : '' }}>Tandarts</option>
+                            <option value="Mondhygiënist" {{ old('rolename') == 'Mondhygiënist' ? 'selected' : '' }}>Mondhygiënist</option>
+                            <option value="Assistent" {{ old('rolename') == 'Assistent' ? 'selected' : '' }}>Assistent</option>
+                            <option value="Praktijkmanagement" {{ old('rolename') == 'Praktijkmanagement' ? 'selected' : '' }}>Praktijkmanagement</option>
                         </select>
-                        @error('role')
+                        @error('rolename')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
-                    </div>
-
-                    <div class="mb-6">
-                        <label for="specialization" class="block font-medium text-sm text-gray-700">Specialisatie (Optioneel)</label>
-                        <input id="specialization" type="text" name="specialization" value="{{ old('specialization') }}"
-                            class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full mt-1">
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
