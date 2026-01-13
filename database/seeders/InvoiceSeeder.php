@@ -23,11 +23,20 @@ class InvoiceSeeder extends Seeder
                 'email' => 'test@example.com',
                 'rolename' => 'patient',
             ]);
+            // Create person and patient if not exists
+            $person = \App\Models\Person::factory()->create(['user_id' => $patientUser->id]);
+            $patient = \App\Models\Patient::factory()->create(['person_id' => $person->id]);
+        } else {
+            $patient = $patientUser->person->patient ?? null;
+            if (!$patient) {
+                $person = \App\Models\Person::factory()->create(['user_id' => $patientUser->id]);
+                $patient = \App\Models\Patient::factory()->create(['person_id' => $person->id]);
+            }
         }
 
-        // Create sample invoices for the user
+        // Create sample invoices for the patient
         \App\Models\Invoice::create([
-            'patient_id' => $patientUser->id,
+            'patient_id' => $patient->id,
             'amount' => 150.00,
             'status' => 'unpaid',
             'due_date' => now()->addDays(30),
@@ -35,7 +44,7 @@ class InvoiceSeeder extends Seeder
         ]);
 
         \App\Models\Invoice::create([
-            'patient_id' => $patientUser->id,
+            'patient_id' => $patient->id,
             'amount' => 75.50,
             'status' => 'paid',
             'due_date' => now()->subDays(10),
@@ -43,7 +52,7 @@ class InvoiceSeeder extends Seeder
         ]);
 
         \App\Models\Invoice::create([
-            'patient_id' => $patientUser->id,
+            'patient_id' => $patient->id,
             'amount' => 200.00,
             'status' => 'overdue',
             'due_date' => now()->subDays(5),
