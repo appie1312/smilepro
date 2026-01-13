@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Appointment;
 use App\Models\Invoice;
 use App\Models\Person;
+use App\Models\EmployeeAvailability;
 
 class User extends Authenticatable
 {
@@ -68,6 +69,11 @@ class User extends Authenticatable
     public function person()
     {
         return $this->hasOne(Person::class);
+    }
+
+    public function availabilities()
+    {
+        return $this->hasMany(EmployeeAvailability::class, 'user_id');
     }
 }
 
