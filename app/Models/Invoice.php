@@ -6,22 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Appointment extends Model
+class Invoice extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'patient_id',
-        'dentist_id',
-        'date',
+        'amount',
         'status',
-        'is_actief',
-        'opmerking',
+        'due_date',
+        'description',
     ];
 
     protected $casts = [
-        'date' => 'datetime',
-        'is_actief' => 'boolean',
+        'due_date' => 'date',
+        'amount' => 'decimal:2',
     ];
 
     public function patient(): BelongsTo
@@ -29,10 +27,8 @@ class Appointment extends Model
         return $this->belongsTo(Patient::class);
     }
 
-    public function employee(): BelongsTo
+    public function treatment(): BelongsTo
     {
-        return $this->belongsTo(Employee::class, 'dentist_id');
+        return $this->belongsTo(Treatment::class);
     }
 }
-
-

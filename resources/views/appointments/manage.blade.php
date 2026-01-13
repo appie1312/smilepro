@@ -26,28 +26,35 @@
                         <table class="min-w-full border border-gray-200 text-sm">
                             <thead class="bg-gray-100">
                                 <tr>
-                                    <th class="border px-4 py-2 text-left">Naam klant</th>
+                                    <th class="border px-4 py-2 text-left">Patiënt</th>
                                     <th class="border px-4 py-2 text-left">Tijd</th>
-                                    <th class="border px-4 py-2 text-left">Datum afspraak</th>
-                                    <th class="border px-4 py-2 text-left">Afspraak met</th>
-                                    <th class="border px-4 py-2 text-left">Telefoonnummer</th>
-                                    <th class="border px-4 py-2 text-left">Adres</th>
+                                    <th class="border px-4 py-2 text-left">Datum</th>
+                                    <th class="border px-4 py-2 text-left">Behandelaar</th>
+                                    <th class="border px-4 py-2 text-left">Status</th>
                                     <th class="border px-4 py-2 text-left">Acties</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($appointments as $appointment)
                                     <tr class="hover:bg-gray-50">
-                                        <td class="border px-4 py-2">{{ $appointment->customer_name }}</td>
                                         <td class="border px-4 py-2">
-                                            {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i') }}
+                                            {{ $appointment->patient?->person?->voornaam }} {{ $appointment->patient?->person?->achternaam }}
                                         </td>
                                         <td class="border px-4 py-2">
-                                            {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d-m-Y') }}
+                                            {{ $appointment->tijd ? \Carbon\Carbon::parse($appointment->tijd)->format('H:i') : '-' }}
                                         </td>
-                                        <td class="border px-4 py-2">{{ $appointment->with_whom }}</td>
-                                        <td class="border px-4 py-2">{{ $appointment->phone }}</td>
-                                        <td class="border px-4 py-2">{{ $appointment->address }}</td>
+                                        <td class="border px-4 py-2">
+                                            {{ $appointment->datum ? \Carbon\Carbon::parse($appointment->datum)->format('d-m-Y') : '-' }}
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            {{ $appointment->employee?->person?->voornaam }} {{ $appointment->employee?->person?->achternaam }}
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <span class="px-2 py-1 text-xs rounded
+                                                {{ $appointment->status === 'Bevestigd' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ $appointment->status }}
+                                            </span>
+                                        </td>
                                         <td class="border px-4 py-2">
                                             {{-- Later kun je hier een edit-knop toevoegen --}}
                                             <form method="POST"

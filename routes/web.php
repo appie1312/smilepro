@@ -21,6 +21,22 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/management/appointments/{appointment}', [AppointmentController::class, 'destroy'])
         ->name('appointments.destroy');
+
+    // Custom invoice routes
+    Route::get('/invoices/create', [App\Http\Controllers\InvoiceController::class, 'create'])
+        ->name('invoices.create')
+        ->middleware('role:praktijkmanagement');
+
+    Route::post('/invoices', [App\Http\Controllers\InvoiceController::class, 'store'])
+        ->name('invoices.store')
+        ->middleware('role:praktijkmanagement');
+        
+    Route::get('/invoices/manage', [App\Http\Controllers\InvoiceController::class, 'manage'])
+        ->name('invoices.manage')
+        ->middleware('role:praktijkmanagement');
+
+    // Invoices for admin
+    Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->middleware('auth');
 });
 
 Route::get('/mijn-afspraken', [AppointmentController::class, 'myAppointments'])
@@ -41,7 +57,7 @@ Route::get('/management-dashboard', function () {
             abort(403, 'Geen toegang — Alleen praktijkmanagement mag dit zien.');
         }
 
-        return 'Welkom Praktijkmanager!';
+        return view('dashboard_beheren');
     })->name('management.dashboard');
 
 
@@ -85,6 +101,9 @@ Route::get('/patient', [App\Http\Controllers\PatientController::class, 'index'])
     ->name('patient.index')
     ->middleware(['auth', 'role:patient,praktijkmanagement']);
 
+Route::get('/facturen', [App\Http\Controllers\InvoiceController::class, 'index'])
+    ->name('invoices.index')
+    ->middleware(['auth', 'role:patient']);
     
 
 Route::get('/dashboard', function () {

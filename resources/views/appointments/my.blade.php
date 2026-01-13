@@ -22,26 +22,37 @@
                                     <th class="border px-4 py-2 text-left">Naam patiënt</th>
                                     <th class="border px-4 py-2 text-left">Datum</th>
                                     <th class="border px-4 py-2 text-left">Tijd</th>
-                                    <th class="border px-4 py-2 text-left">Telefoon</th>
-                                    <th class="border px-4 py-2 text-left">Adres</th>
+                                    <th class="border px-4 py-2 text-left">Status</th>
+                                    <th class="border px-4 py-2 text-left">Opmerking</th>
                                 </tr>
                             </thead>
 
-                            <tbody id="appointmentsTable"></tbody>
+                            <tbody>
+                                @foreach($appointments as $appointment)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border px-4 py-2">
+                                            {{ $appointment->patient?->person?->voornaam }} {{ $appointment->patient?->person?->achternaam }}
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            {{ $appointment->datum ? \Carbon\Carbon::parse($appointment->datum)->format('d-m-Y') : '-' }}
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            {{ $appointment->tijd ? \Carbon\Carbon::parse($appointment->tijd)->format('H:i') : '-' }}
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <span class="px-2 py-1 text-xs rounded
+                                                {{ $appointment->status === 'Bevestigd' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ $appointment->status }}
+                                            </span>
+                                        </td>
+                                        <td class="border px-4 py-2">{{ $appointment->opmerking ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 @endif
             </div>
         </div>
     </div>
-
-<script>
-    const appointments = @json($appointments);
-</script>
-<script src="{{ asset('js/appointments-table.js') }}"></script>
-
-
-
-
-
 </x-app-layout>
