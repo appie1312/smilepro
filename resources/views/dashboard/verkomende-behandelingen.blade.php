@@ -16,15 +16,23 @@
                 <tr>
                     <th class="p-3 text-left">Behandelaar</th>
                     <th class="p-3 text-left">Datum</th>
+                    <th class="p-3 text-left">Tijd</th>
+                    <th class="p-3 text-left">Afspraak</th>
+                    <th class="p-3 text-left">Behandeling</th>
                     <th class="p-3 text-left">Status</th>
+                    <th class="p-3 text-left">Opmerking</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($rows as $r)
                     <tr class="border-b border-gray-800">
                         <td class="p-3">{{ $r->voornaam }} {{ $r->tussenvoegsel }} {{ $r->achternaam }}</td>
-                        <td class="p-3">{{ $r->date }}</td>
+                        <td class="p-3">{{ \Carbon\Carbon::parse($r->date)->format('d-m-Y') }}</td>
+                        <td class="p-3">{{ $r->tijd }}</td>
+                        <td class="p-3">{{ $r->afspraak }}</td>
+                        <td class="p-3">{{ $r->behandeling }}</td>
                         <td class="p-3">{{ $r->status }}</td>
+                        <td class="p-3">{{ $r->opmerking ?? '-' }}</td>
                     </tr>
                 @endforeach
             </tbody>
