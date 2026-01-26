@@ -91,6 +91,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('omzet.index');
 });
 
+Route::get(
+    '/dashboard/verkomende-behandelingen',
+    [\App\Http\Controllers\DashboardController::class, 'verkomendeBehandelingen']
+)->middleware('auth')
+    ->name('dashboard.verkomende-behandelingen');
+
 
 Route::get('/', function () {
     return view('welcome');

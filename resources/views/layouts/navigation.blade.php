@@ -62,6 +62,9 @@
                         <x-nav-link :href="route('invoices.manage')" :active="request()->routeIs('invoices.manage')">
                             Facturen beheren
                         </x-nav-link>
+                        <x-nav-link :href="route('dashboard.verkomende-behandelingen')" :active="request()->routeIs('dashboard.verkomende-behandelingen')">
+                            Verkomende Behandelingen
+                        </x-nav-link>
                     @endif
 
                 </div>
@@ -158,8 +161,12 @@
                  <x-responsive-nav-link :href="route('invoices.manage')" :active="request()->routeIs('invoices.manage')">
                     Facturen beheren
                 </x-responsive-nav-link>
+                <x/responsive-nav-link :href="route('dashboard.verkomende-behandelingen')" :active="request()->routeIs('dashboard.verkomende-behandelingen')">
+                    Verkomende Behandelingen
+                </x/responsive-nav-link>
             @endif
         </div>
+            
 
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
