@@ -74,17 +74,21 @@ class AppointmentSeeder extends Seeder
             $dentistIds[] = $user->id; // dentist_id = USER id in jouw appointments tabel
         }
 
-        // 8 afspraken (meer dan 3) en verschillende tandartsen
-        $dagen = [1, 2, 3, 4, 5, 6, 7, 8];
+        // 8 afspraken + verschillende tijden
+        $dagen  = [1, 2, 3, 4, 5, 6, 7, 8];
+        $tijden = ['09:00:00', '10:30:00', '11:15:00', '13:00:00', '14:30:00', '15:45:00', '16:15:00', '08:45:00'];
 
         foreach ($dagen as $i => $dag) {
+            $datum = now()->addDays($dag)->toDateString();
+            $tijd  = $tijden[$i % count($tijden)];
+
             DB::table('appointments')->insert([
                 'patient_id' => $patient->id,
                 'dentist_id' => $dentistIds[$i % count($dentistIds)],
-                'date' => now()->addDays($dag)->toDateString(),
+                'date' => $datum . ' ' . $tijd,   // DATETIME (datum + tijd)
                 'status' => 'Bevestigd',
                 'is_actief' => 1,
-                'opmerking' => null,
+                'opmerking' => 'Controle afspraak',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
