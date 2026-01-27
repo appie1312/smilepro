@@ -23,6 +23,11 @@ class RoleMiddleware
 
         $userRole = strtolower($user->rolename ?? '');
 
+        // Allow 'pm' as alias for 'praktijkmanagement'
+        if (in_array('praktijkmanagement', $roles) && $userRole === 'pm') {
+            $userRole = 'praktijkmanagement';
+        }
+
         if (!in_array($userRole, $roles, true)) {
             abort(403, 'onvoldoende rechten');
         }

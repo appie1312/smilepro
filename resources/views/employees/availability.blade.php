@@ -7,6 +7,11 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session('success'))
+                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
 
                 @if ($hasAvailability)
@@ -56,7 +61,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if(strtolower(auth()->user()->rolename) === 'praktijkmanagement' || strtolower(auth()->user()->rolename) === 'admin')
+                                        @if(in_array(strtolower(auth()->user()->rolename), ['praktijkmanagement', 'admin', 'tandarts', 'pm']))
                                             <form action="{{ route('employees.availability.destroy', $availability) }}" method="POST" onsubmit="return confirm('Verwijderen?');" class="inline">
                                                 @csrf
                                                 @method('DELETE')

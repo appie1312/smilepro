@@ -13,14 +13,22 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Toon succesmelding na actie --}}
             @if (session('success'))
                 <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>
                 </div>
             @endif
+            {{-- Toon foutmelding bij problemen --}}
+            @if (session('error'))
+                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if($invoices->count() > 0)
+                        {{-- Tabel met alle facturen --}}
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-gray-700">
@@ -82,10 +90,17 @@
                                                 {{ $invoice->description ?? 'Geen omschrijving' }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                {{-- Link om factuur te bewerken --}}
                                                 <a href="{{ route('invoices.edit', $invoice) }}"
-                                                   class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                                   class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-2">
                                                     Bewerken
                                                 </a>
+                                                {{-- Form om factuur te verwijderen --}}
+                                                <form action="{{ route('invoices.destroy', $invoice) }}" method="POST" onsubmit="return confirm('Weet je zeker dat je deze factuur wilt verwijderen?');" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900">Verwijderen</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach

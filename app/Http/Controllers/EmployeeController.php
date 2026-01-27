@@ -60,6 +60,47 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Bewerk formulier voor medewerker.
+     */
+    public function edit(User $employee)
+    {
+        $allowedRoles = ['Praktijkmanagement', 'admin', 'Tandarts', 'pm'];
+        if (!in_array(auth()->user()->rolename, $allowedRoles)) {
+            abort(403, 'Geen toegang');
+        }
+
+        return view('employees.edit', [
+            'employee' => $employee
+        ]);
+    }
+
+    /**
+     * Update medewerker.
+     */
+    public function update(Request $request, User $employee)
+    {
+        $allowedRoles = ['Praktijkmanagement', 'admin', 'Tandarts', 'pm'];
+        if (!in_array(auth()->user()->rolename, $allowedRoles)) {
+            abort(403, 'Geen toegang');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $employee->id,
+            'rolename' => 'required|in:' . implode(',', self::EMPLOYEE_ROLES),
+        ]);
+
+        $employee->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'rolename' => $validated['rolename'],
+        ]);
+
+        return redirect()->route('employees.index')
+            ->with('success', "Medewerker {$validated['name']} is succesvol bijgewerkt.");
+    }
+
+    /**
      * Toon beschikbaarheid van een specifieke medewerker.
      */
     public function showAvailability(User $employee)
@@ -126,7 +167,8 @@ class EmployeeController extends Controller
 
     public function editAvailability(EmployeeAvailability $availability)
 {
-    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
+    $allowedRoles = ['Praktijkmanagement', 'admin', 'Tandarts', 'pm'];
+    if (!in_array(auth()->user()->rolename, $allowedRoles)) {
         abort(403, 'Geen toegang');
     }
     $employees = User::whereIn('rolename', self::EMPLOYEE_ROLES)->orderBy('name')->get();
@@ -135,7 +177,8 @@ class EmployeeController extends Controller
 
 public function updateAvailability(Request $request, EmployeeAvailability $availability)
 {
-    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
+    $allowedRoles = ['Praktijkmanagement', 'admin', 'Tandarts', 'pm'];
+    if (!in_array(auth()->user()->rolename, $allowedRoles)) {
         abort(403, 'Geen toegang');
     }
     // Validatie en update logic (zie vorig antwoord)
@@ -153,5 +196,17 @@ public function updateAvailability(Request $request, EmployeeAvailability $avail
 
     return redirect()->route('employees.availability', $availability->user_id)
         ->with('success', 'Beschikbaarheid succesvol bijgewerkt.');
+}
+
+public function destroyAvailability(EmployeeAvailability $availability)
+{
+    $allowedRoles = ['Praktijkmanagement', 'admin', 'Tandarts', 'pm'];
+    if (!in_array(auth()->user()->rolename, $allowedRoles)) {
+        abort(403, 'Geen toegang');
+    }
+
+    $availability->delete();
+
+    return redirect()->back()->with('success', 'Beschikbaarheid succesvol verwijderd.');
 }
 }

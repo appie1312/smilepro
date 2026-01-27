@@ -7,18 +7,26 @@
 
     <div class="py-12">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            {{-- Toon succesmelding als factuur is bijgewerkt --}}
             @if (session('success'))
                 <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>
                 </div>
             @endif
+            {{-- Toon foutmelding bij problemen --}}
+            @if (session('error'))
+                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    {{-- Formulier om factuur te bewerken --}}
                     <form method="POST" action="{{ route('invoices.update', $invoice) }}">
                         @csrf
                         @method('PUT')
 
-                        <!-- Patient Selection -->
+                        {{-- Patiënt selectie --}}
                         <div class="mb-4">
                             <label for="patient_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Patiënt
@@ -37,7 +45,7 @@
                             @enderror
                         </div>
 
-                        <!-- Amount -->
+                        {{-- Bedrag invoer --}}
                         <div class="mb-4">
                             <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Bedrag (€)
@@ -50,7 +58,7 @@
                             @enderror
                         </div>
 
-                        <!-- Status -->
+                        {{-- Status selectie --}}
                         <div class="mb-4">
                             <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Status
@@ -66,7 +74,7 @@
                             @enderror
                         </div>
 
-                        <!-- Due Date -->
+                        {{-- Vervaldatum invoer --}}
                         <div class="mb-4">
                             <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Vervaldatum
@@ -79,7 +87,7 @@
                             @enderror
                         </div>
 
-                        <!-- Description -->
+                        {{-- Omschrijving invoer --}}
                         <div class="mb-4">
                             <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Omschrijving
@@ -91,7 +99,7 @@
                             @enderror
                         </div>
 
-                        <!-- Submit Button -->
+                        {{-- Knoppen voor annuleren en bijwerken --}}
                         <div class="flex items-center justify-end">
                             <a href="{{ route('invoices.manage') }}"
                                class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest hover:bg-gray-400 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mr-2">

@@ -46,6 +46,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('invoices.update')
         ->middleware('role:praktijkmanagement');
 
+    Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])
+        ->name('invoices.destroy')
+        ->middleware('role:praktijkmanagement');
+
     // Resource voor admin/algemeen (zorgt voor edit/update/destroy routes)
     // Route::resource('invoices', InvoiceController::class);
 
@@ -67,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/beschikbaarheid/{availability}/bewerken', [EmployeeController::class, 'editAvailability'])->name('employees.availability.edit');
     Route::put('/beschikbaarheid/{availability}', [EmployeeController::class, 'updateAvailability'])->name('employees.availability.update');
+    Route::delete('/beschikbaarheid/{availability}', [EmployeeController::class, 'destroyAvailability'])->name('employees.availability.destroy');
 
     // 4. Nieuwe medewerker toevoegen (Alleen Praktijkmanagement)
     Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])
