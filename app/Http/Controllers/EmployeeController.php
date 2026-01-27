@@ -123,4 +123,24 @@ class EmployeeController extends Controller
         return redirect()->route('employees.availability', $targetUser)
             ->with('success', 'Beschikbaarheid succesvol toegevoegd.');
     }
+
+    /** 
+     * Verwijder een medewerker.
+     */
+    public function destroy(User $employee)
+{
+    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
+        abort(403, 'Geen toegang');
+    }
+
+    if (Auth::id() === $employee->id) {
+        return redirect()->route('employees.index')
+            ->with('error', 'Je kunt je eigen account niet verwijderen.');
+    }
+
+    $employee->delete();
+
+    return redirect()->route('employees.index')
+        ->with('success', 'Medewerker succesvol verwijderd.');
+}
 }
