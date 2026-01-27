@@ -10,12 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
-    // De rollen zoals ze in jouw database staan
     const EMPLOYEE_ROLES = ['Assistent', 'Mondhygiënist', 'Tandarts', 'Praktijkmanagement'];
 
-    /**
-     * Toon medewerkersoverzicht.
-     */
+    // --- LEZEN (Voor iedereen) ---
+
     public function index()
     {
         $employees = User::whereIn('rolename', self::EMPLOYEE_ROLES)
@@ -29,39 +27,6 @@ class EmployeeController extends Controller
         ]);
     }
 
-    /**
-     * Formulier nieuwe medewerker.
-     */
-    public function create()
-    {
-        return view('employees.create');
-    }
-
-    /**
-     * Opslaan nieuwe medewerker.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'rolename' => 'required|in:' . implode(',', self::EMPLOYEE_ROLES),
-        ]);
-
-        User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'rolename' => $validated['rolename'],
-            'password' => Hash::make('welkom123'),
-        ]);
-
-        return redirect()->route('employees.index')
-            ->with('success', "Medewerker {$validated['name']} is succesvol toegevoegd.");
-    }
-
-    /**
-     * Toon beschikbaarheid van een specifieke medewerker.
-     */
     public function showAvailability(User $employee)
     {
         $availabilities = $employee->availabilities()
@@ -76,29 +41,81 @@ class EmployeeController extends Controller
         ]);
     }
 
-    /**
-     * AANGEPAST: Formulier voor beschikbaarheid toevoegen.
-     * Nu sturen we ook de lijst met medewerkers mee naar de view.
-     */
-    public function createAvailability()
-    {
-        // Haal alle medewerkers op zodat je er eentje kunt kiezen in de dropdown
-        $employees = User::whereIn('rolename', self::EMPLOYEE_ROLES)
-            ->orderBy('name')
-            ->get();
-
-        return view('employees.create-availability', [
-            'employees' => $employees
-        ]);
+    // --- BEHEREN (Alleen Management) ---
+    // Helper functie om toegang te checken
+    private function checkAccess() {
+        $role = strtolower(trim(auth()->user()->rolename));
+        if ($role !== 'praktijkmanagement' && $role !== 'admin') {
+            abort(403, 'Geen toegang');
+        }
     }
 
-    /**
-     * AANGEPAST: Sla beschikbaarheid op voor de GEKOZEN gebruiker.
-     */
+    public function create()
+    {
+        $this->checkAccess();
+        return view('employees.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->checkAccess();
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'rolename' => 'required|in:' . implode(',', self::EMPLOYEE_ROLES),
+        ]);
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'rolename' => $validated['rolename'],
+            'password' => Hash::make('welkom123'),
+        ]);
+
+        return redirect()->route('employees.index')->with('success', "Medewerker {$validated['name']} toegevoegd.");
+    }
+
+    public function edit(User $employee)
+    {
+        $this->checkAccess();
+        return view('employees.edit', compact('employee'));
+    }
+
+    public function update(Request $request, User $employee)
+    {
+        $this->checkAccess();
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $employee->id,
+            'rolename' => 'required|in:' . implode(',', self::EMPLOYEE_ROLES),
+        ]);
+
+        $employee->update($validated);
+        return redirect()->route('employees.index')->with('success', 'Medewerker bijgewerkt.');
+    }
+
+    public function destroy(User $employee)
+    {
+        $this->checkAccess();
+        if (Auth::id() === $employee->id) {
+            return redirect()->route('employees.index')->with('error', 'Je kunt jezelf niet verwijderen.');
+        }
+        $employee->delete();
+        return redirect()->route('employees.index')->with('success', 'Medewerker verwijderd.');
+    }
+
+    public function createAvailability()
+    {
+        $this->checkAccess();
+        $employees = User::whereIn('rolename', self::EMPLOYEE_ROLES)->orderBy('name')->get();
+        return view('employees.create-availability', ['employees' => $employees]);
+    }
+
     public function storeAvailability(Request $request)
     {
+        $this->checkAccess();
         $validated = $request->validate([
-            'user_id'   => 'required|exists:users,id', // Dit veld komt nu uit het formulier
+            'user_id'   => 'required|exists:users,id',
             'date_from' => 'required|date',
             'date_to'   => 'required|date|after_or_equal:date_from',
             'time_from' => 'required',
@@ -107,33 +124,39 @@ class EmployeeController extends Controller
             'comment'   => 'nullable|string',
         ]);
 
-        EmployeeAvailability::create([
-            'user_id'   => $validated['user_id'], // Gebruik de gekozen medewerker ID
-            'date_from' => $validated['date_from'],
-            'date_to'   => $validated['date_to'],
-            'time_from' => $validated['time_from'],
-            'time_to'   => $validated['time_to'],
-            'status'    => $validated['status'],
-            'comment'   => $validated['comment'],
+        EmployeeAvailability::create($validated);
+        return redirect()->route('employees.availability', $validated['user_id'])->with('success', 'Beschikbaarheid toegevoegd.');
+    }
+
+    public function editAvailability(EmployeeAvailability $availability)
+    {
+        $this->checkAccess();
+        $employees = User::whereIn('rolename', self::EMPLOYEE_ROLES)->orderBy('name')->get();
+        return view('employees.edit-availability', compact('availability', 'employees'));
+    }
+
+    public function updateAvailability(Request $request, EmployeeAvailability $availability)
+    {
+        $this->checkAccess();
+        $validated = $request->validate([
+            'user_id'   => 'required|exists:users,id',
+            'date_from' => 'required|date',
+            'date_to'   => 'required|date|after_or_equal:date_from',
+            'time_from' => 'required',
+            'time_to'   => 'required|after:time_from',
+            'status'    => 'required|in:Aanwezig,Afwezig,Verlof,Ziek',
+            'comment'   => 'nullable|string',
         ]);
 
-        // We sturen de gebruiker terug naar het overzicht van de medewerker waarvoor net is ingevuld
-        $targetUser = User::find($validated['user_id']);
-        
-        return redirect()->route('employees.availability', $targetUser)
-            ->with('success', 'Beschikbaarheid succesvol toegevoegd.');
+        $availability->update($validated);
+        return redirect()->route('employees.availability', $availability->user_id)->with('success', 'Beschikbaarheid bijgewerkt.');
     }
 
     public function destroyAvailability(EmployeeAvailability $availability)
-{
-    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
-        abort(403, 'Geen toegang');
+    {
+        $this->checkAccess();
+        $userId = $availability->user_id; 
+        $availability->delete();
+        return redirect()->route('employees.availability', $userId)->with('success', 'Beschikbaarheid verwijderd.');
     }
-
-    $userId = $availability->user_id; 
-    $availability->delete();
-
-    return redirect()->route('employees.availability', $userId)
-        ->with('success', 'De beschikbaarheid is verwijderd.');
-}
 }

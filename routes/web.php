@@ -42,28 +42,28 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('invoices', InvoiceController::class);
 
     // --- MEDEWERKERS & BESCHIKBAARHEID ---
-    
-    // 1. Overzicht
-    Route::get('/medewerkers', [EmployeeController::class, 'index'])
-        ->name('employees.index');
-    
-    // 2. Beschikbaarheid inzien
-    Route::get('/medewerkers/{employee}/beschikbaarheid', [EmployeeController::class, 'showAvailability'])
-        ->name('employees.availability');
 
-    // 3. Eigen beschikbaarheid beheren
-    Route::get('/mijn-beschikbaarheid/toevoegen', [EmployeeController::class, 'createAvailability'])
-        ->name('employees.availability.create');
-    Route::post('/mijn-beschikbaarheid', [EmployeeController::class, 'storeAvailability'])
-        ->name('employees.availability.store');
+    // 1. Overzicht & Inzien (Voor iedereen)
+    Route::get('/medewerkers', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/medewerkers/{employee}/beschikbaarheid', [EmployeeController::class, 'showAvailability'])->name('employees.availability');
+    
+    // Medewerkers aanmaken
+    Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/medewerkers', [EmployeeController::class, 'store'])->name('employees.store');
 
+    // Medewerkers wijzigen & verwijderen
+    Route::get('/medewerkers/{employee}/bewerken', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/medewerkers/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::delete('/medewerkers/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+
+    // Beschikbaarheid aanmaken
+    Route::get('/beschikbaarheid/toevoegen', [EmployeeController::class, 'createAvailability'])->name('employees.availability.create');
+    Route::post('/beschikbaarheid', [EmployeeController::class, 'storeAvailability'])->name('employees.availability.store');
+
+    // Beschikbaarheid wijzigen & verwijderen
+    Route::get('/beschikbaarheid/{availability}/bewerken', [EmployeeController::class, 'editAvailability'])->name('employees.availability.edit');
+    Route::put('/beschikbaarheid/{availability}', [EmployeeController::class, 'updateAvailability'])->name('employees.availability.update');
     Route::delete('/beschikbaarheid/{availability}', [EmployeeController::class, 'destroyAvailability'])->name('employees.availability.destroy');
-
-    // 4. Nieuwe medewerker toevoegen (Alleen Praktijkmanagement)
-    Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])
-        ->name('employees.create');
-    Route::post('/medewerkers', [EmployeeController::class, 'store'])
-        ->name('employees.store');
 });
 
 // --- OVERIGE ROUTES ---
