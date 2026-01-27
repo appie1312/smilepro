@@ -70,6 +70,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('employees.create');
     Route::post('/medewerkers', [EmployeeController::class, 'store'])
         ->name('employees.store');
+
+    Route::delete('/medewerkers/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 });
 
 // --- OVERIGE ROUTES ---
