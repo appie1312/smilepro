@@ -62,4 +62,30 @@ class InvoiceController extends Controller
             'title' => 'Alle Facturen'
         ]);
     }
+
+    public function edit(Invoice $invoice)
+    {
+        $patients = Patient::with('person')->whereHas('person')->where('is_actief', true)->get();
+
+        return view('invoices.edit', [
+            'invoice' => $invoice,
+            'patients' => $patients,
+            'title' => 'Factuur Bewerken'
+        ]);
+    }
+
+    public function update(Request $request, Invoice $invoice)
+    {
+        $request->validate([
+            'patient_id' => 'required|exists:patients,id',
+            'amount' => 'required|numeric|min:0',
+            'status' => 'required|in:unpaid,paid,overdue',
+            'due_date' => 'required|date',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $invoice->update($request->only(['patient_id', 'amount', 'status', 'due_date', 'description']));
+
+        return redirect()->route('invoices.manage')->with('success', 'Factuur succesvol bijgewerkt.');
+    }
 }

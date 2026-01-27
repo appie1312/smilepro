@@ -38,8 +38,16 @@ Route::middleware(['auth'])->group(function () {
         ->name('invoices.manage')
         ->middleware('role:praktijkmanagement');
 
+    Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])
+        ->name('invoices.edit')
+        ->middleware('role:praktijkmanagement');
+
+    Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])
+        ->name('invoices.update')
+        ->middleware('role:praktijkmanagement');
+
     // Resource voor admin/algemeen (zorgt voor edit/update/destroy routes)
-    Route::resource('invoices', InvoiceController::class);
+    // Route::resource('invoices', InvoiceController::class);
 
     // --- MEDEWERKERS & BESCHIKBAARHEID ---
     
