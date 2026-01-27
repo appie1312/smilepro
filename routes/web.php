@@ -57,6 +57,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mijn-beschikbaarheid', [EmployeeController::class, 'storeAvailability'])
         ->name('employees.availability.store');
 
+    Route::get('/beschikbaarheid/{availability}/bewerken', [EmployeeController::class, 'editAvailability'])->name('employees.availability.edit');
+    Route::put('/beschikbaarheid/{availability}', [EmployeeController::class, 'updateAvailability'])->name('employees.availability.update');
+
     // 4. Nieuwe medewerker toevoegen (Alleen Praktijkmanagement)
     Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])
         ->name('employees.create');

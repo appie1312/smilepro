@@ -123,4 +123,35 @@ class EmployeeController extends Controller
         return redirect()->route('employees.availability', $targetUser)
             ->with('success', 'Beschikbaarheid succesvol toegevoegd.');
     }
+
+    public function editAvailability(EmployeeAvailability $availability)
+{
+    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
+        abort(403, 'Geen toegang');
+    }
+    $employees = User::whereIn('rolename', self::EMPLOYEE_ROLES)->orderBy('name')->get();
+    return view('employees.edit-availability', compact('availability', 'employees'));
+}
+
+public function updateAvailability(Request $request, EmployeeAvailability $availability)
+{
+    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
+        abort(403, 'Geen toegang');
+    }
+    // Validatie en update logic (zie vorig antwoord)
+    $validated = $request->validate([
+        'user_id'   => 'required|exists:users,id',
+        'date_from' => 'required|date',
+        'date_to'   => 'required|date|after_or_equal:date_from',
+        'time_from' => 'required',
+        'time_to'   => 'required|after:time_from',
+        'status'    => 'required|in:Aanwezig,Afwezig,Verlof,Ziek',
+        'comment'   => 'nullable|string',
+    ]);
+
+    $availability->update($validated);
+
+    return redirect()->route('employees.availability', $availability->user_id)
+        ->with('success', 'Beschikbaarheid succesvol bijgewerkt.');
+}
 }
