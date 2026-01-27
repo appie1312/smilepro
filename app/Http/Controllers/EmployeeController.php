@@ -124,33 +124,16 @@ class EmployeeController extends Controller
             ->with('success', 'Beschikbaarheid succesvol toegevoegd.');
     }
 
-    /**
-     * Formulier voor het bewerken van een medewerker.
-     */
-public function edit(User $employee)
-{
-    // Check: Alleen management mag dit
-    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
-        abort(403, 'Geen toegang');
-    }
-    return view('employees.edit', compact('employee'));
-}
-
-public function update(Request $request, User $employee)
+    public function destroyAvailability(EmployeeAvailability $availability)
 {
     if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
         abort(403, 'Geen toegang');
     }
 
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $employee->id,
-        'rolename' => 'required|in:' . implode(',', self::EMPLOYEE_ROLES),
-    ]);
+    $userId = $availability->user_id; 
+    $availability->delete();
 
-    $employee->update($validated);
-
-    return redirect()->route('employees.index')
-        ->with('success', 'Medewerker gegevens succesvol bijgewerkt.');
+    return redirect()->route('employees.availability', $userId)
+        ->with('success', 'De beschikbaarheid is verwijderd.');
 }
 }
