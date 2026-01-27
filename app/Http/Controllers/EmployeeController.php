@@ -123,4 +123,17 @@ class EmployeeController extends Controller
         return redirect()->route('employees.availability', $targetUser)
             ->with('success', 'Beschikbaarheid succesvol toegevoegd.');
     }
+
+    public function destroyAvailability(EmployeeAvailability $availability)
+{
+    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
+        abort(403, 'Geen toegang');
+    }
+
+    $userId = $availability->user_id; 
+    $availability->delete();
+
+    return redirect()->route('employees.availability', $userId)
+        ->with('success', 'De beschikbaarheid is verwijderd.');
+}
 }

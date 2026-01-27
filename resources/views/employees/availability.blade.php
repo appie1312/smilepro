@@ -55,6 +55,15 @@
                                             <span class="text-red-600">NIET INZETBAAR</span>
                                         @endif
                                     </td>
+                                    <td>
+                                        @if(strtolower(auth()->user()->rolename) === 'praktijkmanagement' || strtolower(auth()->user()->rolename) === 'admin')
+                                            <form action="{{ route('employees.availability.destroy', $availability) }}" method="POST" onsubmit="return confirm('Verwijderen?');" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900">Verwijderen</button>
+                                            </form>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

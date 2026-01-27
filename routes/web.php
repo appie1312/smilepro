@@ -57,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mijn-beschikbaarheid', [EmployeeController::class, 'storeAvailability'])
         ->name('employees.availability.store');
 
+    Route::delete('/beschikbaarheid/{availability}', [EmployeeController::class, 'destroyAvailability'])->name('employees.availability.destroy');
+
     // 4. Nieuwe medewerker toevoegen (Alleen Praktijkmanagement)
     Route::get('/medewerkers/toevoegen', [EmployeeController::class, 'create'])
         ->name('employees.create');
