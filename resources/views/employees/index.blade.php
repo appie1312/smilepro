@@ -47,6 +47,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $employee->email }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('employees.availability', $employee) }}" class="text-blue-600 hover:text-blue-900">Beschikbaarheid</a>
+
+                                        @if(strtolower(auth()->user()->rolename) === 'praktijkmanagement' || strtolower(auth()->user()->rolename) === 'admin')
+                                            <a href="{{ route('employees.edit', $employee) }}" class="text-yellow-600 hover:text-yellow-900 mr-2">Bewerken</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

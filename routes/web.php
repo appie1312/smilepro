@@ -62,6 +62,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('employees.create');
     Route::post('/medewerkers', [EmployeeController::class, 'store'])
         ->name('employees.store');
+
+    Route::get('/medewerkers/{employee}/bewerken', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/medewerkers/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
 });
 
 // --- OVERIGE ROUTES ---
