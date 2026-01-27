@@ -49,11 +49,7 @@
                                         <a href="{{ route('employees.availability', $employee) }}" class="text-blue-600 hover:text-blue-900">Beschikbaarheid</a>
 
                                         @if(strtolower(auth()->user()->rolename) === 'praktijkmanagement' || strtolower(auth()->user()->rolename) === 'admin')
-                                            <form action="{{ route('employees.destroy', $employee) }}" method="POST" onsubmit="return confirm('Weet je zeker dat je deze medewerker wilt verwijderen?');" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Verwijderen</button>
-                                            </form>
+                                            <a href="{{ route('employees.edit', $employee) }}" class="text-yellow-600 hover:text-yellow-900 mr-2">Bewerken</a>
                                         @endif
                                     </td>
                                 </tr>

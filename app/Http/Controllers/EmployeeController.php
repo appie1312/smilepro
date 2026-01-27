@@ -124,23 +124,33 @@ class EmployeeController extends Controller
             ->with('success', 'Beschikbaarheid succesvol toegevoegd.');
     }
 
-    /** 
-     * Verwijder een medewerker.
+    /**
+     * Formulier voor het bewerken van een medewerker.
      */
-    public function destroy(User $employee)
+public function edit(User $employee)
+{
+    // Check: Alleen management mag dit
+    if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
+        abort(403, 'Geen toegang');
+    }
+    return view('employees.edit', compact('employee'));
+}
+
+public function update(Request $request, User $employee)
 {
     if (auth()->user()->rolename !== 'Praktijkmanagement' && auth()->user()->rolename !== 'admin') {
         abort(403, 'Geen toegang');
     }
 
-    if (Auth::id() === $employee->id) {
-        return redirect()->route('employees.index')
-            ->with('error', 'Je kunt je eigen account niet verwijderen.');
-    }
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $employee->id,
+        'rolename' => 'required|in:' . implode(',', self::EMPLOYEE_ROLES),
+    ]);
 
-    $employee->delete();
+    $employee->update($validated);
 
     return redirect()->route('employees.index')
-        ->with('success', 'Medewerker succesvol verwijderd.');
+        ->with('success', 'Medewerker gegevens succesvol bijgewerkt.');
 }
 }

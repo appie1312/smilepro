@@ -71,7 +71,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/medewerkers', [EmployeeController::class, 'store'])
         ->name('employees.store');
 
-    Route::delete('/medewerkers/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+    Route::get('/medewerkers/{employee}/bewerken', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/medewerkers/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
 });
 
 // --- OVERIGE ROUTES ---
